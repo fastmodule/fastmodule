@@ -1,0 +1,6 @@
+﻿services:
+  fastmodule.host.api:
+    image: fastmodule.host.api
+    build:
+      context: .
+      dockerfile: src/Fastmodule.Host.Api/Dockerfile

@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{A1649AF6-541B-4672-952C-74161D2A7EEB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastModule.Host.Api", "src\FastModule.Host.Api\FastModule.Host.Api.csproj", "{81BDAC0C-DAAB-4237-9A48-3A8994C82608}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{CE34E465-13FD-4BDA-B5AF-75F6299D3934}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastModule.Core", "FastModule.Core\FastModule.Core.csproj", "{B9DEEFA9-7FBD-47D3-AA08-1991CC54A139}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{81BDAC0C-DAAB-4237-9A48-3A8994C82608}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81BDAC0C-DAAB-4237-9A48-3A8994C82608}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81BDAC0C-DAAB-4237-9A48-3A8994C82608}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81BDAC0C-DAAB-4237-9A48-3A8994C82608}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9DEEFA9-7FBD-47D3-AA08-1991CC54A139}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9DEEFA9-7FBD-47D3-AA08-1991CC54A139}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9DEEFA9-7FBD-47D3-AA08-1991CC54A139}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9DEEFA9-7FBD-47D3-AA08-1991CC54A139}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{81BDAC0C-DAAB-4237-9A48-3A8994C82608} = {A1649AF6-541B-4672-952C-74161D2A7EEB}
+		{CE34E465-13FD-4BDA-B5AF-75F6299D3934} = {A1649AF6-541B-4672-952C-74161D2A7EEB}
+		{B9DEEFA9-7FBD-47D3-AA08-1991CC54A139} = {CE34E465-13FD-4BDA-B5AF-75F6299D3934}
+	EndGlobalSection
+EndGlobal
