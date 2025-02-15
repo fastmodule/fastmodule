@@ -5,6 +5,7 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <RootNamespace>Fastmodule.Host.Api</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
@@ -17,6 +18,10 @@
       <Content Include="..\..\.dockerignore">
         <Link>.dockerignore</Link>
       </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\FastModule.Core\FastModule.Core.csproj" />
     </ItemGroup>
 
 </Project>
