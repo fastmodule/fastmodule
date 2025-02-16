@@ -15,15 +15,20 @@ public class UserModule : IModule
 
     public IEndpointRouteBuilder MapEndpoints(IEndpointRouteBuilder endpoints)
     {
-        endpoints.MapGet("/api/users", () =>
-        {
-            return Results.Ok(new[]
+        endpoints.MapGet(
+            "/api/users",
+            () =>
             {
-                new { Id = 1, Name = "Alice" },
-                new { Id = 2, Name = "Bob" },
-                new { Id = 3, Name = "Charlie" },
-            });
-        });
+                return Results.Ok(
+                    new[]
+                    {
+                        new { Id = 1, Name = "Alice" },
+                        new { Id = 2, Name = "Bob" },
+                        new { Id = 3, Name = "Charlie" },
+                    }
+                );
+            }
+        );
         return endpoints;
     }
 }

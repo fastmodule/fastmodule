@@ -21,8 +21,11 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\FastModule.Core\FastModule.Core.csproj" />
       <ProjectReference Include="..\..\FastModule.SourceGenerator\FastModule.SourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\FastModule.Core\FastModule.Core.csproj" />
       <ProjectReference Include="..\..\FastModule.UserModule\FastModule.UserModule.csproj" />
     </ItemGroup>
 

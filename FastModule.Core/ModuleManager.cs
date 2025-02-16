@@ -7,7 +7,10 @@ public static class ModuleManager
 {
     private static readonly List<Type> _registeredModules = new();
 
-    public static IServiceCollection RegisterModules(IServiceCollection services, params Type[] moduleTypes)
+    public static IServiceCollection RegisterModules(
+        IServiceCollection services,
+        params Type[] moduleTypes
+    )
     {
         foreach (var moduleType in moduleTypes)
         {
@@ -27,7 +30,8 @@ public static class ModuleManager
             throw new InvalidOperationException($"{moduleType.Name} does not implement IModule.");
 
         // Register dependencies first
-        var dependsOnAttributes = moduleType.GetCustomAttributes(typeof(DependsOnAttribute), false)
+        var dependsOnAttributes = moduleType
+            .GetCustomAttributes(typeof(DependsOnAttribute), false)
             .Cast<DependsOnAttribute>();
         foreach (var attribute in dependsOnAttributes)
         {
@@ -35,12 +39,19 @@ public static class ModuleManager
         }
 
         // Register the module itself
-        var moduleInstance = Activator.CreateInstance(moduleType) as IModule;
+        var moduleInstance =
+            Activator.CreateInstance(moduleType) as IModule
+            ?? throw new InvalidOperationException(
+                $"Failed to create instance of {moduleType.Name}"
+            );
         moduleInstance.RegisterModule(services);
         _registeredModules.Add(moduleType);
     }
 
-    public static IEndpointRouteBuilder MapModules(IEndpointRouteBuilder endpoints, params Type[] moduleTypes)
+    public static IEndpointRouteBuilder MapModules(
+        IEndpointRouteBuilder endpoints,
+        params Type[] moduleTypes
+    )
     {
         foreach (var moduleType in moduleTypes)
         {
@@ -55,7 +66,11 @@ public static class ModuleManager
         if (!_registeredModules.Contains(moduleType))
             throw new InvalidOperationException($"{moduleType.Name} has not been registered.");
 
-        var moduleInstance = Activator.CreateInstance(moduleType) as IModule;
+        var moduleInstance =
+            Activator.CreateInstance(moduleType) as IModule
+            ?? throw new InvalidOperationException(
+                $"Failed to create instance of {moduleType.Name}"
+            );
         moduleInstance.MapEndpoints(endpoints);
     }
 }
