@@ -6,6 +6,9 @@ using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Automatically register modules using generated code
+//builder.Services.RegisterModules();
+
 var keycloakSetting = builder.Configuration.GetSection("KeycloakSetting").Get<KeycloakSetting>();
 builder.Services.AddKeycloakAuthentication(keycloakSetting);
 
@@ -37,5 +40,7 @@ app.MapGet("/user", (ClaimsPrincipal claimsPrincipal) =>
     return claimsPrincipal.Claims.ToDictionary(c => c.Type, c => c.Value);
 }).RequireAuthorization();
 
+// Automatically map module endpoints using generated code
+//app.MapModules();
 app.Run();
 
