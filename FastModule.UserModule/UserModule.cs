@@ -1,34 +1,16 @@
-using FastModule.Core;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Routing;
+using System.Reflection;
+using FastModule.Core.Extensions;
+using FastModule.Core.Interfaces;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FastModule.UserModule;
 
-public class UserModule : IModule
+public sealed class UserModule : IModule
 {
-    public IServiceCollection RegisterModule(IServiceCollection services)
+    public void Register(IServiceCollection services, IConfiguration configuration)
     {
-        return services;
-    }
-
-    public IEndpointRouteBuilder MapEndpoints(IEndpointRouteBuilder endpoints)
-    {
-        endpoints.MapGet(
-            "/api/users",
-            () =>
-            {
-                return Results.Ok(
-                    new[]
-                    {
-                        new { Id = 1, Name = "Alice" },
-                        new { Id = 2, Name = "Bob" },
-                        new { Id = 3, Name = "Charlie" },
-                    }
-                );
-            }
-        );
-        return endpoints;
+        services.RegisterScopes(Assembly.GetExecutingAssembly());
+        services.AddControllers().AddApplicationPart(typeof(UserModule).Assembly);
     }
 }
