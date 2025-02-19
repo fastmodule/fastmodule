@@ -1,7 +1,11 @@
+using System.Reflection;
 using FastModule.Core.Attributes;
 using FastModule.Core.Interfaces;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace FastModule.Core.Extensions;
 
@@ -10,82 +14,77 @@ public static class ModuleRegistrationExtensions
     public static void RegisterModules(this IServiceCollection services, IConfiguration configuration)
     {
         var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+        
         var moduleTypes = assemblies
             .SelectMany(a => a.GetTypes())
-            .Where(t => typeof(IModule).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract)
+            .Where(t => typeof(IFastModule).IsAssignableFrom(t) && t is { IsInterface: false, IsAbstract: false })
             .ToList();
 
-        // Create a dictionary to track dependencies
-        var moduleDependencyMap = new Dictionary<Type, List<Type>>();
-
-        //  Ensure all modules exist in the dictionary first to avoid null reference exceptions
-        foreach (var module in moduleTypes)
+        if (!moduleTypes.Any())
         {
-            if (!moduleDependencyMap.ContainsKey(module))
-            {
-                moduleDependencyMap[module] = new List<Type>(); // Initialize empty dependency list
-            }
+            Console.WriteLine("❌ No modules found for registration!");
+            return;
         }
 
-        // Populate dependencies
-        foreach (var module in moduleTypes)
+        Console.WriteLine($"🔹 Discovered {moduleTypes.Count} modules...");
+        
+
+        foreach (var moduleType in moduleTypes)
         {
-            var dependsOnAttributes = module.GetCustomAttributes(typeof(DependsOnAttribute), true)
-                .Cast<DependsOnAttribute>();
-
-            var dependencies = dependsOnAttributes.SelectMany(attr => attr.Dependencies).ToList();
-
-            // Add dependencies to existing module entry
-            if (moduleDependencyMap.ContainsKey(module))
+            var dependsOnAttributes = moduleType.GetCustomAttributes(typeof(DependsOnAttribute), true)
+                .Cast<DependsOnAttribute>()
+                .ToList();
+            
+            foreach (var dependsOn in dependsOnAttributes)
             {
-                moduleDependencyMap[module].AddRange(dependencies);
+                Console.WriteLine($"🔹 Module depends on {dependsOn.ModuleType}...");
+                Console.WriteLine($"🔹 Module name is {moduleType.Name}");
+                var moduleInstance = (IFastModule)Activator.CreateInstance(dependsOn.ModuleType)!;
+                moduleInstance.Register(services, configuration);
+
+                // ✅ Register API modules implementing IEndpointDefinition
+                if (typeof(IEndpointDefinition).IsAssignableFrom(moduleType))
+                {
+                    services.AddSingleton(typeof(IEndpointDefinition), moduleInstance);
+                    Console.WriteLine($"✅ Registered API Module: {moduleType.Name}");
+                }
             }
-        }
-
-        // Sort modules based on dependencies
-        var sortedModules = TopologicalSort(moduleDependencyMap);
-
-        // Register modules in the correct order
-        foreach (var moduleType in sortedModules)
-        {
-            var moduleInstance = (IModule)Activator.CreateInstance(moduleType);
-            moduleInstance.Register(services, configuration);
+            
+            
+         
         }
     }
     
-    private static List<Type> TopologicalSort(Dictionary<Type, List<Type>> dependencyMap)
+    public static IServiceCollection AddEndpoints(this IServiceCollection services, Assembly assembly)
     {
-        var sorted = new List<Type>();
-        var visited = new HashSet<Type>();
+        var serviceDescriptors = assembly
+            .DefinedTypes
+            .Where(type => type is { IsAbstract: false, IsInterface: false } &&
+                           type.IsAssignableTo(typeof(IEndpointDefinition)))
+            .Select(type => ServiceDescriptor.Transient(typeof(IEndpointDefinition), type))
+            .ToArray();
 
-        void Visit(Type module)
-        {
-            if (visited.Contains(module))
-                return;
-
-            if (!dependencyMap.ContainsKey(module))
-            {
-                throw new KeyNotFoundException($"Module {module.FullName} is not present in the dependency map.");
-            }
-
-            visited.Add(module);
-
-            foreach (var dependency in dependencyMap[module])
-            {
-                Visit(dependency);
-            }
-
-            sorted.Add(module);
-        }
-
-        Console.WriteLine("Discovered Modules:");
-        foreach (var module in dependencyMap.Keys)
-        {
-            Console.WriteLine($" - {module.FullName}");
-            Visit(module);
-        }
-
-        return sorted;
+        services.TryAddEnumerable(serviceDescriptors);
+        return services;
     }
+    
+    
+    public static IApplicationBuilder MapFastModuleEndpoints(
+        this WebApplication app,
+        RouteGroupBuilder? routeGroupBuilder = null)
+    {
+        var endpoints = app.Services
+            .GetRequiredService<IEnumerable<IEndpointDefinition>>();
 
+        IEndpointRouteBuilder builder =
+            routeGroupBuilder is null ? app : routeGroupBuilder;
+
+        foreach (var endpoint in endpoints)
+        {
+            endpoint.MapEndpoint(builder);
+        }
+
+        return app;
+    }
 }
+

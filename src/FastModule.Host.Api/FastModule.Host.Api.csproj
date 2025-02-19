@@ -22,7 +22,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\FastModule.Core\FastModule.Core.csproj" />
-      <ProjectReference Include="..\..\FastModule.UserModule\FastModule.UserModule.csproj" />
+      <ProjectReference Include="..\..\FastModule.User\FastModule.User.csproj" />
     </ItemGroup>
 
 </Project>

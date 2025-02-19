@@ -1,9 +1,11 @@
 using FastModule.Core.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace FastModule.Keycloak.Extensions;
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-
-namespace FastModule.Host.Api.Extensions;
 
 public static class OAuthExtensions
 {
@@ -99,7 +101,7 @@ public static class OAuthExtensions
                 }
             );
         });
-
+        services.AddHttpContextAccessor();
         services.AddAuthorization();
         return services;
     }

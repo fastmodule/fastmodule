@@ -1,17 +1,21 @@
-
 using FastModule.Core.Extensions;
-using FastModule.Host.Api;
+using FastModule.Host.Api.Extensions;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Register all discovered modules
+// Register modules
 builder.Services.RegisterModules(builder.Configuration);
+
 var app = builder.Build();
+app.ConfigureDevelopmentEnvironment();
 
-// Create an instance of ApiModule and initialize it
 
-var apiModule = new ApiModule();
-await apiModule.InitiateAsync(app);
+// Configure middleware
+app.UseHttpsRedirection();
+app.UseAuthentication();
+app.UseAuthorization();
 
+// Configure endpoints
+app.MapFastModuleEndpoints(app.MapGroup("/api").RequireAuthorization());
 app.Run();

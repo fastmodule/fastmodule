@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace FastModule.Core.Interfaces;
 
-public interface IModule
+public interface IFastModule
 {
     void Register(IServiceCollection services, IConfiguration configuration);
 }

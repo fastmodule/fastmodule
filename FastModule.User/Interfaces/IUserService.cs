@@ -1,4 +1,4 @@
-namespace FastModule.UserModule.Interfaces;
+namespace FastModule.User.Interfaces;
 
 public interface IUserService
 {
