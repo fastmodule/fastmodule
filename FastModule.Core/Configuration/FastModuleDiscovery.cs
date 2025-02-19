@@ -17,6 +17,12 @@ public class FastModuleDiscovery(ILogger logger)
         "Azure.",
         "WindowsBase",
         "mscorlib",
+        "Scalar",
+        "netstandard",
+        "Npgsql",
+        "Mono",
+        "Humanizer",
+        "MediatR"
     ];
 
     public IEnumerable<Type> DiscoverModules()
@@ -196,12 +202,11 @@ public class FastModuleDiscovery(ILogger logger)
                 {
                     logger.LogDebug("Scanning assembly for modules: {Assembly}", a.FullName);
 
-                    // Only look at public types that could implement IModule
+                    // Only look at public types that could implement IFastModule
                     var types = a.GetExportedTypes()
                         .Where(t =>
-                            !t.IsAbstract
-                            && !t.IsInterface
-                            && typeof(IFastModule).IsAssignableFrom(t)
+                            t is { IsAbstract: false, IsInterface: false }
+                            && (typeof(IFastModule).IsAssignableFrom(t) || typeof(IFastModuleEvent).IsAssignableFrom(t))
                         )
                         .ToList();
 
