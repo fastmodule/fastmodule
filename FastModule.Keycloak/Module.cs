@@ -1,8 +1,9 @@
+using FastModule.Core.Attributes;
 using FastModule.Core.Configuration;
-using FastModule.Core.Extensions;
 using FastModule.Core.Interfaces;
 using FastModule.Keycloak.Endpoints;
 using FastModule.Keycloak.Extensions;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
@@ -11,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace FastModule.Keycloak;
 
+[DependsOn(typeof(Shared.Module))]
 public class Module : IFastModule
 {
     public void Register(IServiceCollection services)
@@ -31,7 +33,8 @@ public class Module : IFastModule
     public IEndpointRouteBuilder AddRoutes(IEndpointRouteBuilder app)
     {
         var keycloak = app.MapGroup("/keycloak").WithTags("hooks");
-        new Webhook().MapEndpoint(keycloak);
+        var mediatR = app.ServiceProvider.GetRequiredService<IMediator>();
+        new Webhook(mediatR).MapEndpoint(keycloak);
         return keycloak;
     }
 }
