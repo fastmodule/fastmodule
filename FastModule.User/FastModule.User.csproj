@@ -5,8 +5,10 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
+
     <ItemGroup>
-        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+      <ProjectReference Include="..\FastModule.Core\FastModule.Core.csproj" />
+      <ProjectReference Include="..\FastModule.Keycloak\FastModule.Keycloak.csproj" />
     </ItemGroup>
 
 </Project>
