@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\FastModule.Core\FastModule.Core.csproj" />
+      <ProjectReference Include="..\FastModule.Keycloak\FastModule.Keycloak.csproj" />
+    </ItemGroup>
+
+</Project>

@@ -1,38 +1,37 @@
 using System.Collections.Concurrent;
 using System.Reflection;
+using FastModule.Core.Interfaces;
 using Microsoft.Extensions.Logging;
 
-namespace FastModule.Core;
+namespace FastModule.Core.Configuration;
 
-public class ModuleDiscovery
+public class FastModuleDiscovery(ILogger logger)
 {
-    private readonly ILogger _logger;
     private readonly ConcurrentDictionary<Assembly, IReadOnlyList<Type>> _moduleTypeCache = new();
 
     private static readonly string[] ExcludedAssemblyPrefixes =
-    {
+    [
         "System.",
         "Microsoft.",
         "Newtonsoft.",
         "Azure.",
         "WindowsBase",
         "mscorlib",
-    };
-
-    public ModuleDiscovery(ILogger logger)
-    {
-        _logger = logger;
-    }
+    ];
 
     public IEnumerable<Type> DiscoverModules()
     {
         var assemblies = GetRelevantAssemblies();
-        Console.WriteLine("Found {0} assemblies", assemblies.Count());
-        foreach (var assembly in assemblies)
+        var enumerable = assemblies as Assembly[] ?? assemblies.ToArray();
+
+        logger.LogInformation($"Found {0} assemblies {enumerable.Count()}");
+
+        foreach (var assembly in enumerable)
         {
             Console.WriteLine("Assembly: {0}", assembly.FullName);
         }
-        return assemblies.SelectMany(GetModuleTypes).Distinct();
+
+        return enumerable.SelectMany(GetModuleTypes).Distinct();
     }
 
     private IEnumerable<Assembly> GetRelevantAssemblies()
@@ -60,7 +59,7 @@ public class ModuleDiscovery
             ScanAssembly(assembly, loadedAssemblies, assembliesToScan);
         }
 
-        _logger.LogInformation("Found {Count} assemblies to scan", assembliesToScan.Count);
+        logger.LogInformation($"Found {assembliesToScan.Count} assemblies to scan");
         return assembliesToScan;
     }
 
@@ -98,10 +97,11 @@ public class ModuleDiscovery
                 catch (BadImageFormatException)
                 {
                     // Not a .NET assembly, skip
+                    logger.LogInformation("Skipping non-.NET assembly: {File}", file);
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogWarning(ex, "Error loading assembly from file: {File}", file);
+                    logger.LogError(ex, "Error loading assembly from file: {File}", file);
                 }
             }
 
@@ -113,7 +113,7 @@ public class ModuleDiscovery
         }
         catch (Exception ex)
         {
-            _logger.LogWarning(ex, "Error scanning directory: {Directory}", directory);
+            logger.LogError(ex, "Error scanning directory: {Directory}", directory);
         }
     }
 
@@ -145,12 +145,12 @@ public class ModuleDiscovery
         }
 
         assembliesToScan.Add(assembly);
-        _logger.LogDebug("Added assembly to scan: {Assembly}", assembly.FullName);
+        logger.LogDebug($"Added assembly to scan: {assembly.FullName}");
 
         try
         {
             var referencedAssemblies = assembly.GetReferencedAssemblies();
-            _logger.LogDebug(
+            logger.LogDebug(
                 "Found {Count} references in {Assembly}",
                 referencedAssemblies.Length,
                 assembly.GetName().Name
@@ -168,7 +168,7 @@ public class ModuleDiscovery
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogWarning(
+                    logger.LogWarning(
                         ex,
                         "Could not load referenced assembly {Assembly}",
                         reference.FullName
@@ -178,7 +178,7 @@ public class ModuleDiscovery
         }
         catch (Exception ex)
         {
-            _logger.LogWarning(
+            logger.LogWarning(
                 ex,
                 "Error getting references for assembly {Assembly}",
                 assembly.FullName
@@ -194,18 +194,20 @@ public class ModuleDiscovery
             {
                 try
                 {
-                    _logger.LogDebug("Scanning assembly for modules: {Assembly}", a.FullName);
+                    logger.LogDebug("Scanning assembly for modules: {Assembly}", a.FullName);
 
                     // Only look at public types that could implement IModule
                     var types = a.GetExportedTypes()
                         .Where(t =>
-                            !t.IsAbstract && !t.IsInterface && typeof(IModule).IsAssignableFrom(t)
+                            !t.IsAbstract
+                            && !t.IsInterface
+                            && typeof(IFastModule).IsAssignableFrom(t)
                         )
                         .ToList();
 
                     if (types.Any())
                     {
-                        _logger.LogInformation(
+                        logger.LogInformation(
                             "Found {Count} modules in {Assembly}",
                             types.Count,
                             a.GetName().Name
@@ -216,7 +218,7 @@ public class ModuleDiscovery
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogWarning(ex, "Error scanning assembly {Assembly}", a.FullName);
+                    logger.LogWarning(ex, "Error scanning assembly {Assembly}", a.FullName);
                     return Array.Empty<Type>();
                 }
             }
