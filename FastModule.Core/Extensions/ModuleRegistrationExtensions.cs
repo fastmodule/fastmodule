@@ -1,90 +1,113 @@
+using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.Reflection;
 using FastModule.Core.Attributes;
+using FastModule.Core.Configuration;
 using FastModule.Core.Interfaces;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging;
 
 namespace FastModule.Core.Extensions;
 
 public static class ModuleRegistrationExtensions
 {
-    public static void RegisterModules(this IServiceCollection services, IConfiguration configuration)
+    private static readonly ConcurrentDictionary<Type, IFastModule> ModuleInstances = new();
+    private static readonly HashSet<Type> RegisteredModules = [];
+    private static ILogger _logger;
+
+    public static HashSet<Type> GetRegisteredModules() => RegisteredModules;
+
+    public static IServiceCollection AddFastModule(this IServiceCollection services)
     {
-        var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-        
-        var moduleTypes = assemblies
-            .SelectMany(a => a.GetTypes())
-            .Where(t => typeof(IFastModule).IsAssignableFrom(t) && t is { IsInterface: false, IsAbstract: false })
-            .ToList();
+        _logger = services.BuildServiceProvider().GetRequiredService<ILogger<IFastModule>>();
+        var sw = Stopwatch.StartNew();
 
-        if (!moduleTypes.Any())
+        var moduleDiscovery = new FastModuleDiscovery(_logger);
+        var moduleTypes = moduleDiscovery.DiscoverModules();
+        var enumerable = moduleTypes as Type[] ?? moduleTypes.ToArray();
+        foreach (var moduleType in enumerable)
         {
-            Console.WriteLine("❌ No modules found for registration!");
-            return;
+            AddFastModule(services, moduleType);
         }
-
-        Console.WriteLine($"🔹 Discovered {moduleTypes.Count} modules...");
-        
-
-        foreach (var moduleType in moduleTypes)
-        {
-            var dependsOnAttributes = moduleType.GetCustomAttributes(typeof(DependsOnAttribute), true)
-                .Cast<DependsOnAttribute>()
-                .ToList();
-            
-            foreach (var dependsOn in dependsOnAttributes)
-            {
-                Console.WriteLine($"🔹 Module depends on {dependsOn.ModuleType}...");
-                Console.WriteLine($"🔹 Module name is {moduleType.Name}");
-                var moduleInstance = (IFastModule)Activator.CreateInstance(dependsOn.ModuleType)!;
-                moduleInstance.Register(services, configuration);
-
-                // ✅ Register API modules implementing IEndpointDefinition
-                if (typeof(IEndpointDefinition).IsAssignableFrom(moduleType))
-                {
-                    services.AddSingleton(typeof(IEndpointDefinition), moduleInstance);
-                    Console.WriteLine($"✅ Registered API Module: {moduleType.Name}");
-                }
-            }
-            
-            
-         
-        }
-    }
-    
-    public static IServiceCollection AddEndpoints(this IServiceCollection services, Assembly assembly)
-    {
-        var serviceDescriptors = assembly
-            .DefinedTypes
-            .Where(type => type is { IsAbstract: false, IsInterface: false } &&
-                           type.IsAssignableTo(typeof(IEndpointDefinition)))
-            .Select(type => ServiceDescriptor.Transient(typeof(IEndpointDefinition), type))
-            .ToArray();
-
-        services.TryAddEnumerable(serviceDescriptors);
+        _logger.LogInformation(
+            "Module registration completed in {ElapsedMs}ms. Successfully registered {Count} modules out of {TotalCount} discovered",
+            sw.ElapsedMilliseconds,
+            RegisteredModules.Count,
+            enumerable.Count()
+        );
         return services;
     }
-    
-    
-    public static IApplicationBuilder MapFastModuleEndpoints(
-        this WebApplication app,
-        RouteGroupBuilder? routeGroupBuilder = null)
+
+    private static void AddFastModule(this IServiceCollection services, Type moduleType)
     {
-        var endpoints = app.Services
-            .GetRequiredService<IEnumerable<IEndpointDefinition>>();
-
-        IEndpointRouteBuilder builder =
-            routeGroupBuilder is null ? app : routeGroupBuilder;
-
-        foreach (var endpoint in endpoints)
+        lock (RegisteredModules)
         {
-            endpoint.MapEndpoint(builder);
+            if (!RegisteredModules.Add(moduleType))
+            {
+                _logger.LogDebug(
+                    "Module {Module} already registered, skipping registration",
+                    moduleType.Name
+                );
+                return;
+            }
         }
 
-        return app;
+        _logger.LogInformation("Starting registration of module: {Module}", moduleType.Name);
+        var sw = Stopwatch.StartNew();
+
+        try
+        {
+            var dependencies = moduleType.GetCustomAttributes<DependsOnAttribute>(false);
+            var onAttributes = dependencies as DependsOnAttribute[] ?? dependencies.ToArray();
+            var dependencyCount = onAttributes.Count();
+            if (dependencyCount > 0)
+            {
+                _logger.LogDebug(
+                    "Module {Module} has {Count} dependencies",
+                    moduleType.Name,
+                    dependencyCount
+                );
+                foreach (var dependency in onAttributes)
+                {
+                    _logger.LogDebug(
+                        "Registering dependency {Dependency} for module {Module}",
+                        dependency.ModuleType.Name,
+                        moduleType.Name
+                    );
+                    AddFastModule(services, dependency.ModuleType);
+                }
+            }
+
+            // Lazy initialization of module instance
+            var module = ModuleInstances.GetOrAdd(
+                moduleType,
+                t =>
+                    (IFastModule)(
+                        Activator.CreateInstance(t)
+                        ?? throw new InvalidOperationException(
+                            $"Failed to create instance of module {t.Name}"
+                        )
+                    )
+            );
+
+            module.Register(services);
+
+            _logger.LogInformation(
+                "Successfully registered module {Module} in {ElapsedMs}ms. Dependencies: {DependencyCount}",
+                moduleType.Name,
+                sw.ElapsedMilliseconds,
+                dependencyCount
+            );
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(
+                ex,
+                "Failed to register module {Module}. Error: {Error}",
+                moduleType.Name,
+                ex.Message
+            );
+            throw;
+        }
     }
 }
-

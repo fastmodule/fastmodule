@@ -7,17 +7,18 @@ namespace FastModule.User.Endpoints;
 
 public class UserMe : IEndpointDefinition
 {
-    public void MapEndpoint(IEndpointRouteBuilder app)
+    public IEndpointRouteBuilder MapEndpoint(IEndpointRouteBuilder app)
     {
-        var usersApi = app
-            .MapGroup("/users")
-            .WithTags("users");
-        
-        usersApi.MapGet("/me", (HttpContext context) =>
-        {
-            var user = context.User;
-            var myClaims = user?.Claims.ToDictionary(c => c.Type, c => c.Value);
-            return Results.Ok(myClaims);
-        });
+        app.MapGet(
+            "/me",
+            (HttpContext context) =>
+            {
+                var user = context.User;
+                var myClaims = user?.Claims.ToDictionary(c => c.Type, c => c.Value);
+                return Results.Ok(myClaims);
+            }
+        );
+
+        return app;
     }
 }

@@ -4,5 +4,5 @@ namespace FastModule.Core.Interfaces;
 
 public interface IEndpointDefinition
 {
-    void MapEndpoint(IEndpointRouteBuilder app);
+    IEndpointRouteBuilder MapEndpoint(IEndpointRouteBuilder app);
 }

@@ -8,11 +8,13 @@ public static class DevelopmentExtensions
     public static IApplicationBuilder ConfigureDevelopmentEnvironment(this WebApplication app)
     {
         // Development-specific configuration
-        if (!app.Environment.IsDevelopment()) return app;
-        
-        var keycloakSetting = app.Configuration.GetSection("KeycloakSetting").Get<KeycloakSetting>()
-                              ?? throw new InvalidOperationException("KeycloakSetting is not configured");
-            
+        if (!app.Environment.IsDevelopment())
+            return app;
+
+        var keycloakSetting =
+            app.Configuration.GetSection("KeycloakSetting").Get<KeycloakSetting>()
+            ?? throw new InvalidOperationException("KeycloakSetting is not configured");
+
         app.MapScalarApiReference(config =>
         {
             config
