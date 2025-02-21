@@ -8,7 +8,12 @@
 
     <ItemGroup>
       <ProjectReference Include="..\FastModule.Core\FastModule.Core.csproj" />
-      <ProjectReference Include="..\FastModule.Keycloak\FastModule.Keycloak.csproj" />
+      <ProjectReference Include="..\FastModule.Shared\FastModule.Shared.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.2" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.2" />
     </ItemGroup>
 
 </Project>
