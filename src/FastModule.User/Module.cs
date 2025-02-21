@@ -1,19 +1,22 @@
 using FastModule.Core.Interfaces;
 using FastModule.User.Endpoints;
+using FastModule.User.Infrastructure.Persistence;
 using FastModule.User.Interfaces;
 using FastModule.User.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FastModule.User;
 
 public class Module : IFastModule, IFastModuleEvent
 {
-    public void Register(IServiceCollection services)
+    public void Register(IServiceCollection services, Action<DbContextOptionsBuilder>? options = null)
     {
         Console.WriteLine("✅ UserModule Registered in DI.");
+        services.AddDbContext<UserDbContext>(options);
         services.AddTransient<IUserService, UserService>();
 
     }
