@@ -7,7 +7,9 @@ public static class EndpointExtensions
 {
     public static IEndpointRouteBuilder MapFastModules(this IEndpointRouteBuilder endpoints)
     {
-        foreach (var moduleType in ModuleRegistrationExtensions.GetRegisteredModules())
+        var onlyFastModules = ModuleRegistrationExtensions.GetRegisteredModules().Where(t => typeof(IFastModule).IsAssignableFrom(t));
+
+        foreach (var moduleType in onlyFastModules)
         {
             MapModule(endpoints, moduleType);
         }

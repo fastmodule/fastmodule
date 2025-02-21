@@ -5,8 +5,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddFastModule();
 
-// Register FastModule Events to communicate with other modules
-builder.Services.AddFastModuleEvents();
 
 var app = builder.Build();
 app.ConfigureDevelopmentEnvironment();

@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace FastModule.Core.Configuration;
 
-public class FastModuleDiscovery<T>(ILogger logger)
+public class FastModuleDiscovery(ILogger logger)
 {
     private readonly ConcurrentDictionary<Assembly, IReadOnlyList<Type>> _moduleTypeCache = new();
 
@@ -205,7 +205,7 @@ public class FastModuleDiscovery<T>(ILogger logger)
                     // Only look at public types that could implement IFastModule
                     var types = a.GetExportedTypes()
                         .Where(t =>
-                            t is { IsAbstract: false, IsInterface: false } && typeof(T).IsAssignableFrom(t)
+                            t is { IsAbstract: false, IsInterface: false } && (typeof(IFastModule).IsAssignableFrom(t) || typeof(IFastModuleEvent).IsAssignableFrom(t))
                         )
                         .ToList();
 

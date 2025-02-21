@@ -12,6 +12,8 @@ namespace FastModule.Core.Extensions;
 public static class ModuleRegistrationExtensions
 {
     private static readonly ConcurrentDictionary<Type, IFastModule> ModuleInstances = new();
+    private static readonly ConcurrentDictionary<Type, IFastModuleEvent> moduleEventInstances = new();
+
     private static readonly HashSet<Type> RegisteredModules = [];
     private static ILogger _logger;
 
@@ -22,7 +24,7 @@ public static class ModuleRegistrationExtensions
         _logger = services.BuildServiceProvider().GetRequiredService<ILogger<IFastModule>>();
         var sw = Stopwatch.StartNew();
 
-        var moduleDiscovery = new FastModuleDiscovery<IFastModule>(_logger);
+        var moduleDiscovery = new FastModuleDiscovery(_logger);
         var moduleTypes = moduleDiscovery.DiscoverModules();
         var enumerable = moduleTypes as Type[] ?? moduleTypes.ToArray();
         foreach (var moduleType in enumerable)
@@ -58,7 +60,9 @@ public static class ModuleRegistrationExtensions
         try
         {
             var dependencies = moduleType
-                .GetCustomAttributes<DependsOnAttribute>(true).Where(t => typeof(IFastModule).IsAssignableFrom(t.ModuleType));
+                .GetCustomAttributes<DependsOnAttribute>(true)
+                .Where(t => 
+                    typeof(IFastModule).IsAssignableFrom(t.ModuleType) || typeof(IFastModuleEvent).IsAssignableFrom(t.ModuleType));
 
             var onAttributes = dependencies as DependsOnAttribute[] ?? dependencies.ToArray();
             var dependencyCount = onAttributes.Count();
@@ -80,19 +84,40 @@ public static class ModuleRegistrationExtensions
                 }
             }
 
-            // Lazy initialization of module instance
-            var module = ModuleInstances.GetOrAdd(
-                moduleType,
-                t =>
-                    (IFastModule)(
-                        Activator.CreateInstance(t)
-                        ?? throw new InvalidOperationException(
-                            $"Failed to create instance of module {t.Name}"
+            if (typeof(IFastModule).IsAssignableFrom(moduleType))
+            {
+                // Lazy initialization of module instance
+                var module = ModuleInstances.GetOrAdd(
+                    moduleType,
+                    t =>
+                        (IFastModule)(
+                            Activator.CreateInstance(t)
+                            ?? throw new InvalidOperationException(
+                                $"Failed to create instance of module {t.Name}"
+                            )
                         )
-                    )
-            );
+                );
 
-            module.Register(services);
+                module.Register(services);
+            }
+        
+            
+            if (typeof(IFastModuleEvent).IsAssignableFrom(moduleType))
+            {
+                // Lazy initialization of module event instance
+                var module = moduleEventInstances.GetOrAdd(
+                    moduleType,
+                    t =>
+                        (IFastModuleEvent)(
+                            Activator.CreateInstance(t)
+                            ?? throw new InvalidOperationException(
+                                $"Failed to create instance of module event {t.Name}"
+                            )
+                        )
+                );
+
+                module.RegisterEvents(services);
+            }
 
             _logger.LogInformation(
                 "Successfully registered module {Module} in {ElapsedMs}ms. Dependencies: {DependencyCount}",
