@@ -1,4 +1,3 @@
-using FastModule.Core.Attributes;
 using FastModule.Core.Configuration;
 using FastModule.Core.Interfaces;
 using FastModule.Keycloak.Endpoints;
@@ -12,7 +11,6 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace FastModule.Keycloak;
 
-[DependsOn(typeof(Shared.Module))]
 public class Module : IFastModule
 {
     public void Register(IServiceCollection services)
