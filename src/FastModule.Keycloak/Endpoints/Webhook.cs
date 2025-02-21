@@ -25,8 +25,8 @@ public class Webhook(IMediator mediator) : IEndpointDefinition
         string jsonPayload = payload.ToString();  
 
         // Parse the JSON string to a JsonDocument
-        JsonDocument doc = JsonDocument.Parse(jsonPayload);
-        JsonElement root = doc.RootElement;
+        var doc = JsonDocument.Parse(jsonPayload);
+        var root = doc.RootElement;
 
         var newUserCreatedEvent = new NewUserCreatedEvent
         {

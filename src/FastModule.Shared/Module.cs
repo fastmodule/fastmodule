@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace FastModule.Shared;
 
-public class Module : IFastModuleEvent
+public sealed class Module : IFastModuleEvent
 {
     public void RegisterEvents(IServiceCollection services)
     {
