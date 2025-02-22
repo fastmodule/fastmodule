@@ -8,7 +8,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\FastModule.Domain\FastModule.Domain.csproj" />
-      <ProjectReference Include="..\src\FastModule.Core\FastModule.Core.csproj" />
     </ItemGroup>
 
     <ItemGroup>
