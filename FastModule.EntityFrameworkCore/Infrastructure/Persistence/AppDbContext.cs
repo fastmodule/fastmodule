@@ -1,6 +1,6 @@
 using FastModule.Core.Domain.Constants;
 using FastModule.Core.Infrastructure.Persistence;
-using FastModule.User.Domain.Entities;
+using FastModule.Domain.Entities.User;
 using Microsoft.EntityFrameworkCore;
 
 namespace FastModule.EntityFrameworkCore.Infrastructure.Persistence;

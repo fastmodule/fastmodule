@@ -8,18 +8,25 @@ public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
 {
     public AppDbContext CreateDbContext(string[] args)
     {
-        var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
-
-        var config = new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-            .AddJsonFile($"appsettings.{environment}.json", optional: true, reloadOnChange: true)
-            .AddEnvironmentVariables()
-            .Build();
-
+        
+        var config = BuildConfiguration();
         var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
         var connectionString = config.GetConnectionString("DefaultConnection");
-        optionsBuilder.UseNpgsql(connectionString);
+        optionsBuilder.UseNpgsql(connectionString, x => 
+            x.MigrationsHistoryTable("fast_module_migrations")
+            .MigrationsAssembly("FastModule.Migrator"));
         return new AppDbContext(optionsBuilder.Options);
+    }
+    
+    private static IConfigurationRoot BuildConfiguration()
+    {
+        var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
+        var builder = new ConfigurationBuilder()
+            .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "../FastModule.Migrator/"))
+            .AddJsonFile("appsettings.json", optional: false)
+            .AddJsonFile($"appsettings.{environment}.json", optional: true, reloadOnChange: true)
+            .AddEnvironmentVariables();
+
+        return builder.Build();
     }
 }

@@ -1,3 +1,6 @@
+using FastModule.User.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
+
 namespace FastModule.User.Endpoints;
 
 using FastModule.Core.Interfaces;
@@ -9,16 +12,13 @@ public sealed class GetUsers : IEndpointDefinition
 {
     public IEndpointRouteBuilder MapEndpoint(IEndpointRouteBuilder app)
     {
+        var scope = app.ServiceProvider.CreateScope();
+        var userService = scope.ServiceProvider.GetRequiredService<IUserService>();
         app.MapGet(
             "/",
-            () =>
+            async () =>
             {
-                var users = new[]
-                {
-                    new { Id = 1, Name = "Alice" },
-                    new { Id = 2, Name = "Bob" },
-                    new { Id = 3, Name = "Charlie" },
-                };
+                var users = await userService.GetUsers();
                 return Results.Ok(users);
             }
         );

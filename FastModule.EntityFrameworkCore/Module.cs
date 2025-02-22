@@ -10,12 +10,10 @@ public sealed class Module : Core.FastModule
 {
     public override void Register(IServiceCollection services, Action<DbContextOptionsBuilder>? options = null)
     {
-        if (options is not null)
-        {
-            services.AddDbContext<AppDbContext>(options);
-            ApplyMigrations(services.BuildServiceProvider()).Wait();
-        }
-       
+        if (options is null) return;
+        services.AddDbContext<AppDbContext>(options);
+       // ApplyMigrations(services.BuildServiceProvider()).Wait();
+
     }
     
     private async Task ApplyMigrations(IServiceProvider serviceProvider)
@@ -26,6 +24,9 @@ public sealed class Module : Core.FastModule
         {
             return;
         }
+
+
+        //var migrator = serviceProvider.GetService<IMigrationsScaffolder>();
         var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         await dbContext.Database.EnsureCreatedAsync();
         await dbContext.Database.MigrateAsync();

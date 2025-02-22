@@ -14,8 +14,7 @@ public sealed class Module : Core.FastModule
     public override void Register(IServiceCollection services, Action<DbContextOptionsBuilder>? options = null)
     {
         Console.WriteLine("✅ UserModule Registered in DI.");
-        services.AddTransient<IUserService, UserService>();
-
+        services.AddScoped<IUserService, UserService>();
     }
 
     public override IEndpointRouteBuilder AddRoutes(IEndpointRouteBuilder app)

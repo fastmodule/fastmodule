@@ -7,8 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddFastModule((options) =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"), 
-        x => x.MigrationsHistoryTable("fast_module_migrations")
-            .MigrationsAssembly("FastModule.Host.Api"));
+        x => x.MigrationsHistoryTable("fast_module_migrations"));
 });
 
 
