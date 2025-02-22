@@ -4,11 +4,10 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace FastModule.Shared;
 
-public sealed class Module : IFastModuleEvent
+public sealed class Module : Core.FastModule
 {
-    public void RegisterEvents(IServiceCollection services)
+    public override void RegisterEvents(IServiceCollection services)
     {
-        Console.WriteLine("✅ SharedModule Registered in DI.");
-
+        base.RegisterEvents(services);
     }
 }

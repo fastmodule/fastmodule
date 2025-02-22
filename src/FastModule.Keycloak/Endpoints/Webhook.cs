@@ -27,7 +27,18 @@ public class Webhook(IMediator mediator) : IEndpointDefinition
         // Parse the JSON string to a JsonDocument
         var doc = JsonDocument.Parse(jsonPayload);
         var root = doc.RootElement;
-
+        
+        
+        /**
+         * dummy payload to test the webhook
+         * {
+              "fullName": "test",
+               "email": "test@gmail.com",
+               "sub": "blablabla",
+                "userName": "something"
+            }
+         */
+        
         var newUserCreatedEvent = new NewUserCreatedEvent
         {
             FullName = root.GetProperty("fullName").ToString(),

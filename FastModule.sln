@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastModule.Shared", "src\Fa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastModule.User", "src\FastModule.User\FastModule.User.csproj", "{68E09D0D-1ED7-4DDE-86F4-612A024E424B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastModule.EntityFrameworkCore", "FastModule.EntityFrameworkCore\FastModule.EntityFrameworkCore.csproj", "{CF3B6C38-0C77-4242-818B-39D36288413D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +31,7 @@ Global
 		{01878181-4FD2-4A5E-B35E-85A3F6CBD681} = {BDD7D5BD-F15A-4EBD-A10C-8874A5F383E5}
 		{69A12805-449A-4F97-BA9C-A20B20408CAE} = {BDD7D5BD-F15A-4EBD-A10C-8874A5F383E5}
 		{68E09D0D-1ED7-4DDE-86F4-612A024E424B} = {BDD7D5BD-F15A-4EBD-A10C-8874A5F383E5}
+		{CF3B6C38-0C77-4242-818B-39D36288413D} = {BDD7D5BD-F15A-4EBD-A10C-8874A5F383E5}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{EBE0828F-3E74-4655-B699-3B5EC3D47A39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -51,5 +54,9 @@ Global
 		{68E09D0D-1ED7-4DDE-86F4-612A024E424B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{68E09D0D-1ED7-4DDE-86F4-612A024E424B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{68E09D0D-1ED7-4DDE-86F4-612A024E424B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF3B6C38-0C77-4242-818B-39D36288413D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF3B6C38-0C77-4242-818B-39D36288413D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF3B6C38-0C77-4242-818B-39D36288413D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF3B6C38-0C77-4242-818B-39D36288413D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
