@@ -4,6 +4,7 @@ using System.Reflection;
 using FastModule.Core.Attributes;
 using FastModule.Core.Configuration;
 using FastModule.Core.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -19,7 +20,7 @@ public static class ModuleRegistrationExtensions
 
     public static HashSet<Type> GetRegisteredModules() => RegisteredModules;
 
-    public static IServiceCollection AddFastModule(this IServiceCollection services)
+    public static IServiceCollection AddFastModule(this IServiceCollection services, Action<DbContextOptionsBuilder>? options = null)
     {
         _logger = services.BuildServiceProvider().GetRequiredService<ILogger<IFastModule>>();
         var sw = Stopwatch.StartNew();
@@ -29,7 +30,7 @@ public static class ModuleRegistrationExtensions
         var enumerable = moduleTypes as Type[] ?? moduleTypes.ToArray();
         foreach (var moduleType in enumerable)
         {
-            AddFastModule(services, moduleType);
+            AddFastModule(services, moduleType, options);
         }
         _logger.LogInformation(
             "Module registration completed in {ElapsedMs}ms. Successfully registered {Count} modules out of {TotalCount} discovered",
@@ -40,7 +41,7 @@ public static class ModuleRegistrationExtensions
         return services;
     }
 
-    private static void AddFastModule(this IServiceCollection services, Type moduleType)
+    private static void AddFastModule(this IServiceCollection services, Type moduleType, Action<DbContextOptionsBuilder>? options)
     {
         lock (RegisteredModules)
         {
@@ -80,7 +81,7 @@ public static class ModuleRegistrationExtensions
                         dependency.ModuleType.Name,
                         moduleType.Name
                     );
-                    AddFastModule(services, dependency.ModuleType);
+                    AddFastModule(services, dependency.ModuleType, options);
                 }
             }
 
@@ -98,7 +99,7 @@ public static class ModuleRegistrationExtensions
                         )
                 );
 
-                module.Register(services);
+                module.Register(services, options);
             }
         
             

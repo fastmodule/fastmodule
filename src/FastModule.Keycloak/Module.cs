@@ -6,14 +6,15 @@ using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FastModule.Keycloak;
 
-public class Module : IFastModule
+public sealed class Module : Core.FastModule
 {
-    public void Register(IServiceCollection services)
+    public override void Register(IServiceCollection services, Action<DbContextOptionsBuilder>? options = null)
     {
         Console.WriteLine("✅ KeycloakModule Registered in DI.");
         using var serviceProvider = services.BuildServiceProvider();
@@ -28,7 +29,7 @@ public class Module : IFastModule
             .AddHttpContextAccessor();
     }
 
-    public IEndpointRouteBuilder AddRoutes(IEndpointRouteBuilder app)
+    public override IEndpointRouteBuilder AddRoutes(IEndpointRouteBuilder app)
     {
         var keycloak = app.MapGroup("/keycloak").WithTags("hooks");
         var mediatR = app.ServiceProvider.GetRequiredService<IMediator>();

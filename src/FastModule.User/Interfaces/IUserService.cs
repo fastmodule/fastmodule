@@ -1,6 +1,8 @@
+using FastModule.Domain.Entities.User;
+
 namespace FastModule.User.Interfaces;
 
 public interface IUserService
 {
-    string GetUserName();
+    Task<List<UserEntity>> GetUsers();
 }

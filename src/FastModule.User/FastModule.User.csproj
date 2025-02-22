@@ -7,6 +7,8 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\FastModule.Domain\FastModule.Domain.csproj" />
+      <ProjectReference Include="..\..\FastModule.EntityFrameworkCore\FastModule.EntityFrameworkCore.csproj" />
       <ProjectReference Include="..\FastModule.Core\FastModule.Core.csproj" />
       <ProjectReference Include="..\FastModule.Shared\FastModule.Shared.csproj" />
     </ItemGroup>

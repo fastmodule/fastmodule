@@ -1,13 +1,14 @@
 using FastModule.Core.Domain.Constants;
-using FastModule.User.Domain.Entities;
+using FastModule.Core.Infrastructure.Persistence;
+using FastModule.Domain.Entities.User;
 using Microsoft.EntityFrameworkCore;
 
-namespace FastModule.User.Infrastructure.Persistence;
+namespace FastModule.EntityFrameworkCore.Infrastructure.Persistence;
 
-public class UserDbContext(DbContextOptions<UserDbContext> options) : DbContext(options)
+public class AppDbContext(DbContextOptions<AppDbContext> options) : FastModuleDbContext<AppDbContext>(options)
 {
     public DbSet<UserEntity> Users { get; set; } = null!;
-
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<UserEntity>().ToTable($"{TablePrefix.Prefix}users");

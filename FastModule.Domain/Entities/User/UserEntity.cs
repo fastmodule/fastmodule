@@ -1,6 +1,6 @@
 using FastModule.Core.Domain.Entities;
 
-namespace FastModule.User.Domain.Entities;
+namespace FastModule.Domain.Entities.User;
 
 public sealed class UserEntity : TimeStampEntity
 {
