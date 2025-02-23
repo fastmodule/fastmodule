@@ -5,7 +5,15 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
-
+    <PropertyGroup>
+        <PackageId>FastModule.Domain</PackageId>
+        <Version>1.0.0</Version>
+        <Authors>@fastModule</Authors>
+        <Description>Adds Keycloak integration for authentication and authorization, enabling seamless OIDC, OAuth2, and JWT-based security within FastModule-based applications.</Description>
+        <PackageProjectUrl>https://github.com/fastmodule/fastmodule</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/fastmodule/fastmodule.git</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+    </PropertyGroup>
     <ItemGroup>
       <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.2" />
       <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.2" />

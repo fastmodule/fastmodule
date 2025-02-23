@@ -5,7 +5,15 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
-
+    <PropertyGroup>
+        <PackageId>FastModule.Domain</PackageId>
+        <Version>1.0.0</Version>
+        <Authors>@fastModule</Authors>
+        <Description>Contains shared utilities, Events, DTOs, constants, and common services used across multiple FastModule components to promote code reusability and consistency.</Description>
+        <PackageProjectUrl>https://github.com/fastmodule/fastmodule</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/fastmodule/fastmodule.git</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+    </PropertyGroup>
     <ItemGroup>
       <ProjectReference Include="..\FastModule.Core\FastModule.Core.csproj" />
     </ItemGroup>

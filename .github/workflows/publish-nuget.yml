@@ -1,0 +1,50 @@
+name: Publish FastModel NuGet Packages
+on:
+    push:
+        tags:
+            - 'Release/v*'
+jobs:
+    build-and-publish:
+        runs-on: ubuntu-latest
+        
+        steps:
+            -   name: Checkout code
+                uses: actions/checkout@v3
+            
+            -   name: Setup .NET
+                uses: actions/setup-dotnet@v3
+                with:
+                    dotnet-version: '9.0.2'
+                    source-url: https://nuget.pkg.github.com/fastmodule/index.json
+                env:
+                    NUGET_AUTH_TOKEN: ${{ secrets.NUGET_KEY }}
+            
+            -   name: Restore dependencies
+                run: dotnet restore
+            
+            -   name: Build all projects
+                run: dotnet build --configuration Release --no-restore
+            
+            -   name: Pack all projects
+                run: |
+                    mkdir -p ./artifacts
+                    dotnet pack FastModule.Core/FastModule.Core.csproj --configuration Release --no-build --output ./artifacts
+                    dotnet pack FastModule.Domain/FastModule.Domain.csproj --configuration Release --no-build --output ./artifacts
+                    dotnet pack FastModule.EntityFrameworkCore/FastModule.EntityFrameworkCore.csproj --configuration Release --no-build --output ./artifacts
+                    dotnet pack FastModule.Keycloak/FastModule.Keycloak.csproj --configuration Release --no-build --output ./artifacts
+                    dotnet pack FastModule.User/FastModule.User.csproj --configuration Release --no-build --output ./artifacts
+                    dotnet pack FastModule.Shared/FastModule.Shared.csproj --configuration Release --no-build --output ./artifacts
+            
+            -   name: Push all packages to GitHub Package Registry
+                run: |
+                    for nupkg in ./artifacts/*.nupkg; do
+                      dotnet nuget push $nupkg --api-key ${{ secrets.NUGET_KEY }} --source https://nuget.pkg.github.com/fastmodule/index.json
+                    done
+                    
+            - name: Notify Discord
+              uses: Ilshidur/action-discord@v1
+              with:
+                  webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
+                  content: "🎉 New release published! 🚀\n\n**Packages:**\n- FastModule.Core\n- FastModule.Domain\n- FastModule.EntityFrameworkCore\n- FastModule.Keycloak\n- FastModule.User\n- FastModule.Shared\n\n**Version:** ${{ github.ref_name }}\n\n**Repository:** ${{ github.repository }}"
+                  avatar: "https://github.com/actions.png"
+                  username: "GitHub Actions"
