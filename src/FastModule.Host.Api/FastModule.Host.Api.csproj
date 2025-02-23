@@ -26,7 +26,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\FastModule.EntityFrameworkCore\FastModule.EntityFrameworkCore.csproj" />
+      <ProjectReference Include="..\FastModule.EntityFrameworkCore\FastModule.EntityFrameworkCore.csproj" />
       <ProjectReference Include="..\FastModule.Core\FastModule.Core.csproj" />
       <ProjectReference Include="..\FastModule.Keycloak\FastModule.Keycloak.csproj" />
       <ProjectReference Include="..\FastModule.User\FastModule.User.csproj" />

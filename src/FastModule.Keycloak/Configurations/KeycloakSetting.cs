@@ -1,4 +1,4 @@
-namespace FastModule.Core.Configuration;
+namespace FastModule.Keycloak.Configurations;
 
 public class KeycloakSetting
 {

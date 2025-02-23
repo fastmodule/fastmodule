@@ -13,7 +13,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\FastModule.Core\FastModule.Core.csproj" />
       <ProjectReference Include="..\FastModule.Shared\FastModule.Shared.csproj" />
     </ItemGroup>
 
