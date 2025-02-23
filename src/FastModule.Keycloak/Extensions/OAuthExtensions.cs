@@ -1,4 +1,4 @@
-using FastModule.Core.Configuration;
+using FastModule.Keycloak.Configurations;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FastModule.Keycloak.Extensions;

@@ -1,5 +1,4 @@
-using FastModule.Core.Configuration;
-using FastModule.Core.Interfaces;
+using FastModule.Keycloak.Configurations;
 using FastModule.Keycloak.Endpoints;
 using FastModule.Keycloak.Extensions;
 using MediatR;

@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace FastModule.Core.Configuration;
 
-public class FastModuleDiscovery(ILogger logger)
+internal class FastModuleDiscovery(ILogger logger)
 {
     private readonly ConcurrentDictionary<Assembly, IReadOnlyList<Type>> _moduleTypeCache = new();
 

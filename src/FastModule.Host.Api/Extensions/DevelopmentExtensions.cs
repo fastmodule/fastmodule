@@ -1,4 +1,4 @@
-using FastModule.Core.Configuration;
+using FastModule.Keycloak.Configurations;
 using Scalar.AspNetCore;
 
 namespace FastModule.Host.Api.Extensions;
