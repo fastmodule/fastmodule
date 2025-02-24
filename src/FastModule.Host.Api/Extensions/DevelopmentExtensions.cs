@@ -8,7 +8,7 @@ public static class DevelopmentExtensions
     public static IApplicationBuilder ConfigureDevelopmentEnvironment(this WebApplication app)
     {
         // Development-specific configuration
-        if (!app.Environment.IsDevelopment())
+        if (app.Environment.IsProduction())
             return app;
 
         var keycloakSetting =
