@@ -14,7 +14,8 @@ public class UserMe : IEndpointDefinition
             (HttpContext context) =>
             {
                 var user = context.User;
-                var myClaims = user?.Claims.ToDictionary(c => c.Type, c => c.Value);
+                var myClaims = user?.Claims.GroupBy(c => c.Type) // Group by claim type
+                    .ToDictionary(g => g.Key, g => g.Select(c => c.Value).ToList());
                 return Results.Ok(myClaims);
             }
         );
