@@ -6,7 +6,7 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
     <PropertyGroup>
-        <PackageId>FastModule.Domain</PackageId>
+        <PackageId>FastModule.Keycloak</PackageId>
         <Version>1.0.0</Version>
         <Authors>@fastModule</Authors>
         <Description>Adds Keycloak integration for authentication and authorization, enabling seamless OIDC, OAuth2, and JWT-based security within FastModule-based applications.</Description>
