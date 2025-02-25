@@ -9,6 +9,7 @@
         <PackageId>FastModule.Shared</PackageId>
         <Version>1.0.0</Version>
         <Authors>@fastModule</Authors>
+        <Company>FastModule</Company>
         <Description>Contains shared utilities, Events, DTOs, constants, and common services used across multiple FastModule components to promote code reusability and consistency.</Description>
         <PackageProjectUrl>https://github.com/fastmodule/fastmodule</PackageProjectUrl>
         <RepositoryUrl>https://github.com/fastmodule/fastmodule.git</RepositoryUrl>
