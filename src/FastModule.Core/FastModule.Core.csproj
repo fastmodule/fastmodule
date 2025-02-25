@@ -9,6 +9,7 @@
         <PackageId>FastModule.Core</PackageId>
         <Version>1.0.0</Version>
         <Authors>@fastModule</Authors>
+        <Company>FastModule</Company>
         <Description>A lightweight, extensible, and modular package designed to simplify the development of modular applications in .NET. It provides a foundation for building applications with independent, self-contained modules, promoting reusability, scalability, and maintainability.</Description>
         <PackageProjectUrl>https://github.com/fastmodule/fastmodule</PackageProjectUrl>
         <RepositoryUrl>https://github.com/fastmodule/fastmodule.git</RepositoryUrl>

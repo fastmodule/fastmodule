@@ -9,6 +9,7 @@
         <PackageId>FastModule.User</PackageId>
         <Version>1.0.0</Version>
         <Authors>@fastModule</Authors>
+        <Company>FastModule</Company>
         <Description> Implements user management features, including user authentication, authorization, role-based access control (RBAC), and profile handling, leveraging Keycloak and EF Core.</Description>
         <PackageProjectUrl>https://github.com/fastmodule/fastmodule</PackageProjectUrl>
         <RepositoryUrl>https://github.com/fastmodule/fastmodule.git</RepositoryUrl>
