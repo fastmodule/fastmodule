@@ -34,7 +34,7 @@ jobs:
             -   name: Push all packages to GitHub Package Registry
                 run: |
                     for nupkg in ./artifacts/*.nupkg; do
-                      dotnet nuget push $nupkg --api-key ${{ secrets.NUGET_KEY }} --source https://api.nuget.org/v3/index.json
+                      dotnet nuget push "$nupkg" --api-key ${{ secrets.NUGET_KEY }} --source "https://api.nuget.org/v3/index.json" --skip-duplicate
                     done
                     
             - name: Notify Discord
