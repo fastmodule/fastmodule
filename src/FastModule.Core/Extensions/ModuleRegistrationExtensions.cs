@@ -23,7 +23,8 @@ public static class ModuleRegistrationExtensions
     /// <summary>
     /// A thread-safe dictionary to store instances of registered FastModule events.
     /// </summary>
-    private static readonly ConcurrentDictionary<Type, IFastModuleEvent> ModuleEventInstances = new();
+    private static readonly ConcurrentDictionary<Type, IFastModuleEvent> ModuleEventInstances =
+        new();
 
     /// <summary>
     /// A collection that keeps track of registered module types to avoid duplicate registrations.
@@ -47,7 +48,10 @@ public static class ModuleRegistrationExtensions
     /// <param name="services">The service collection to register modules into.</param>
     /// <param name="options">Optional action to configure database context options.</param>
     /// <returns>The updated IServiceCollection instance.</returns>
-    public static IServiceCollection AddFastModule(this IServiceCollection services, Action<DbContextOptionsBuilder>? options = null)
+    public static IServiceCollection AddFastModule(
+        this IServiceCollection services,
+        Action<DbContextOptionsBuilder>? options = null
+    )
     {
         _logger = services.BuildServiceProvider().GetRequiredService<ILogger<IFastModule>>();
         var sw = Stopwatch.StartNew();
@@ -77,7 +81,11 @@ public static class ModuleRegistrationExtensions
     /// <param name="services">The service collection to register the module into.</param>
     /// <param name="moduleType">The type of the module to register.</param>
     /// <param name="options">Optional action to configure database context options.</param>
-    private static void AddFastModule(this IServiceCollection services, Type moduleType, Action<DbContextOptionsBuilder>? options)
+    private static void AddFastModule(
+        this IServiceCollection services,
+        Type moduleType,
+        Action<DbContextOptionsBuilder>? options
+    )
     {
         lock (RegisteredModules)
         {
@@ -100,8 +108,9 @@ public static class ModuleRegistrationExtensions
             var dependencies = moduleType
                 .GetCustomAttributes<DependsOnAttribute>(true)
                 .Where(t =>
-                    typeof(IFastModule).IsAssignableFrom(t.ModuleType) ||
-                    typeof(IFastModuleEvent).IsAssignableFrom(t.ModuleType));
+                    typeof(IFastModule).IsAssignableFrom(t.ModuleType)
+                    || typeof(IFastModuleEvent).IsAssignableFrom(t.ModuleType)
+                );
 
             var onAttributes = dependencies as DependsOnAttribute[] ?? dependencies.ToArray();
             var dependencyCount = onAttributes.Length;

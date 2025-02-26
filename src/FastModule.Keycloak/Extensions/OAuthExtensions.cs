@@ -1,12 +1,9 @@
-
 using FastModule.Keycloak.Configurations;
 using Keycloak.AuthServices.Authentication;
 using Keycloak.AuthServices.Authorization;
-
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FastModule.Keycloak.Extensions;
-
 
 using Microsoft.OpenApi.Models;
 
@@ -71,23 +68,24 @@ public static class OAuthExtensions
             config.DisableRolesAccessTokenMapping = false;
             config.VerifyTokenAudience = true;
         });
-        
+
         services.AddKeycloakAuthorization(option =>
         {
             option.AuthServerUrl = keycloakSetting.BaseUrl;
             option.Realm = keycloakSetting.Realm;
             option.Resource = keycloakSetting.ClientId;
-            
         });
-        
-        
-        services.AddAuthorizationBuilder()
-            .AddPolicy("admin", builder =>
-            {
-                builder.RequireResourceRoles(["admin-client-role", "manage-users"]);
-            });
-        
-        
+
+        services
+            .AddAuthorizationBuilder()
+            .AddPolicy(
+                "admin",
+                builder =>
+                {
+                    builder.RequireResourceRoles(["admin-client-role", "manage-users"]);
+                }
+            );
+
         services.AddOpenApi(options =>
         {
             options.AddOperationTransformer(

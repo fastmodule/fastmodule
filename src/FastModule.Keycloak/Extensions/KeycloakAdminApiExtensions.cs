@@ -7,20 +7,28 @@ namespace FastModule.Keycloak.Extensions;
 
 public static class KeycloakAdminApiExtensions
 {
-    public static IServiceCollection AddKeycloakAdminApi(this IServiceCollection services,
-        KeycloakSetting keycloakSetting)
+    public static IServiceCollection AddKeycloakAdminApi(
+        this IServiceCollection services,
+        KeycloakSetting keycloakSetting
+    )
     {
         services.AddDistributedMemoryCache();
-        
-        services.AddClientCredentialsTokenManagement()
-            .AddClient("admin-api", client =>
-            {
-                client.ClientId = keycloakSetting.AdminApi!.ClientId;
-                client.ClientSecret = keycloakSetting.AdminApi!.ClientSecret;
-                client.TokenEndpoint = $"{keycloakSetting.Authority}/protocol/openid-connect/token";
-            });
-        
-        services.AddKeycloakAdminHttpClient(config =>
+
+        services
+            .AddClientCredentialsTokenManagement()
+            .AddClient(
+                "admin-api",
+                client =>
+                {
+                    client.ClientId = keycloakSetting.AdminApi!.ClientId;
+                    client.ClientSecret = keycloakSetting.AdminApi!.ClientSecret;
+                    client.TokenEndpoint =
+                        $"{keycloakSetting.Authority}/protocol/openid-connect/token";
+                }
+            );
+
+        services
+            .AddKeycloakAdminHttpClient(config =>
             {
                 config.Resource = keycloakSetting.ClientId;
                 config.Credentials = new KeycloakClientInstallationCredentials()

@@ -10,7 +10,7 @@ namespace FastModule.EntityFrameworkCore.Infrastructure.Persistence;
 /// Inherits from <see cref="FastModuleDbContext{TDbContext}"/> to support modular database management.
 /// </summary>
 /// <param name="options">The database context options, including the connection string and provider settings.</param>
-public class AppDbContext(DbContextOptions<AppDbContext> options) 
+public class AppDbContext(DbContextOptions<AppDbContext> options)
     : FastModuleDbContext<AppDbContext>(options)
 {
     /// <summary>

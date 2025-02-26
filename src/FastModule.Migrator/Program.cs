@@ -16,26 +16,36 @@ public class Program
     {
         var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
         var host = Host.CreateDefaultBuilder(args)
-            .ConfigureAppConfiguration((ctx, configuration) =>
-            {
-                configuration.Sources.Clear();
-                 
-                configuration.SetBasePath(ctx.HostingEnvironment.ContentRootPath)
-                    .AddJsonFile("appsettings.json", false, true)
-                    .AddJsonFile($"appsettings.{env}.json", true, true)
-                    .AddCommandLine(args)
-                    .AddEnvironmentVariables();
-            })
-            .ConfigureServices((ctx, services) =>
-            {
-                services.AddFastModule((options) =>
+            .ConfigureAppConfiguration(
+                (ctx, configuration) =>
                 {
-                    options.UseNpgsql(ctx.Configuration.GetConnectionString("DefaultConnection"),
-                        x => x.MigrationsHistoryTable("fast_module_migrations")
-                            .MigrationsAssembly("FastModule.Migrator"));
-                });
-                services.AddHostedService<DbMigrator>();
-            });
+                    configuration.Sources.Clear();
+
+                    configuration
+                        .SetBasePath(ctx.HostingEnvironment.ContentRootPath)
+                        .AddJsonFile("appsettings.json", false, true)
+                        .AddJsonFile($"appsettings.{env}.json", true, true)
+                        .AddCommandLine(args)
+                        .AddEnvironmentVariables();
+                }
+            )
+            .ConfigureServices(
+                (ctx, services) =>
+                {
+                    services.AddFastModule(
+                        (options) =>
+                        {
+                            options.UseNpgsql(
+                                ctx.Configuration.GetConnectionString("DefaultConnection"),
+                                x =>
+                                    x.MigrationsHistoryTable("fast_module_migrations")
+                                        .MigrationsAssembly("FastModule.Migrator")
+                            );
+                        }
+                    );
+                    services.AddHostedService<DbMigrator>();
+                }
+            );
 
         host.UseEnvironment(env);
         return host;

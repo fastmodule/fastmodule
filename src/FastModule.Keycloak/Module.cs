@@ -15,7 +15,10 @@ namespace FastModule.Keycloak;
 
 public sealed class Module : Core.FastModule
 {
-    public override void Register(IServiceCollection services, Action<DbContextOptionsBuilder>? options = null)
+    public override void Register(
+        IServiceCollection services,
+        Action<DbContextOptionsBuilder>? options = null
+    )
     {
         Console.WriteLine("✅ KeycloakModule Registered in DI.");
         using var serviceProvider = services.BuildServiceProvider();
@@ -28,7 +31,6 @@ public sealed class Module : Core.FastModule
             .AddKeycloakAuthentication(keycloakSetting)
             .AddKeycloakAdminApi(keycloakSetting)
             .AddHttpContextAccessor();
-
     }
 
     public override IEndpointRouteBuilder AddRoutes(IEndpointRouteBuilder app)

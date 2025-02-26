@@ -26,13 +26,16 @@ public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
         var connectionString = config.GetConnectionString("DefaultConnection");
 
         // Configure PostgreSQL as the database provider and set migration settings
-        optionsBuilder.UseNpgsql(connectionString, x => 
-            x.MigrationsHistoryTable("fast_module_migrations") // Set custom migrations history table
-             .MigrationsAssembly("FastModule.Migrator")); // Specify the assembly containing migrations
+        optionsBuilder.UseNpgsql(
+            connectionString,
+            x =>
+                x.MigrationsHistoryTable("fast_module_migrations") // Set custom migrations history table
+                    .MigrationsAssembly("FastModule.Migrator")
+        ); // Specify the assembly containing migrations
 
         return new AppDbContext(optionsBuilder.Options);
     }
-    
+
     /// <summary>
     /// Builds the application configuration by loading settings from JSON files and environment variables.
     /// </summary>
@@ -40,7 +43,8 @@ public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
     private static IConfigurationRoot BuildConfiguration()
     {
         // Determine the current environment (defaults to "Development" if not set)
-        var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
+        var environment =
+            Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
 
         // Configure the settings file paths
         var builder = new ConfigurationBuilder()

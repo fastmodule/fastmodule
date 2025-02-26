@@ -1,5 +1,4 @@
 using FastModule.Core.Interfaces;
-
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FastModule.Shared;

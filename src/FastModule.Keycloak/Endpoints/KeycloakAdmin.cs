@@ -17,8 +17,7 @@ public sealed class KeycloakAdmin(IHttpContextAccessor contextAccessor) : IEndpo
             return app;
         }
         var keycloakClient = app.ServiceProvider.GetRequiredService<IKeycloakClient>();
-        var keycloak = app.MapGroup("/realm")
-            .RequireAuthorization("admin");
+        var keycloak = app.MapGroup("/realm").RequireAuthorization("admin");
         keycloak.MapGet(
             "/",
             async () =>

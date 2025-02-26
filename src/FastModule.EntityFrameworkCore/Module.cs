@@ -15,10 +15,14 @@ public sealed class Module : Core.FastModule
     /// </summary>
     /// <param name="services">The service collection to which the DbContext should be added.</param>
     /// <param name="options">An optional action to configure the <see cref="DbContextOptionsBuilder"/>.</param>
-    public override void Register(IServiceCollection services, Action<DbContextOptionsBuilder>? options = null)
+    public override void Register(
+        IServiceCollection services,
+        Action<DbContextOptionsBuilder>? options = null
+    )
     {
         // If no options are provided, do not register the DbContext
-        if (options is null) return;
+        if (options is null)
+            return;
 
         // Register the AppDbContext with the provided configuration options
         services.AddDbContext<AppDbContext>(options);

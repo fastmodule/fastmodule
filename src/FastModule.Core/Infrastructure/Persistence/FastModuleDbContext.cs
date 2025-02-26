@@ -8,7 +8,8 @@ namespace FastModule.Core.Infrastructure.Persistence;
 /// </summary>
 /// <typeparam name="TDbContext">The specific DbContext type that inherits from this class.</typeparam>
 /// <param name="options">The database context options for configuration.</param>
-public abstract class FastModuleDbContext<TDbContext>(DbContextOptions<TDbContext> options) : DbContext(options)
+public abstract class FastModuleDbContext<TDbContext>(DbContextOptions<TDbContext> options)
+    : DbContext(options)
     where TDbContext : DbContext
 {
     /// <summary>

@@ -11,7 +11,10 @@ namespace FastModule.User;
 
 public sealed class Module : Core.FastModule
 {
-    public override void Register(IServiceCollection services, Action<DbContextOptionsBuilder>? options = null)
+    public override void Register(
+        IServiceCollection services,
+        Action<DbContextOptionsBuilder>? options = null
+    )
     {
         Console.WriteLine("✅ UserModule Registered in DI.");
         services.AddScoped<IUserService, UserService>();
@@ -29,6 +32,5 @@ public sealed class Module : Core.FastModule
     {
         Console.WriteLine("✅ UserModule Events Registered in DI.");
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Module>());
-
     }
 }
