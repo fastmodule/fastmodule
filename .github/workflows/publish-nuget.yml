@@ -31,10 +31,10 @@ jobs:
                     dotnet pack src/FastModule.Shared/FastModule.Shared.csproj --configuration Release --no-build --output ./artifacts
                 working-directory: ${{ github.workspace }}
                                    
-            -   name: Push all packages to GitHub Package Registry
+            -   name: Push all packages to NuGet/FastModule Organization
                 run: |
                     for nupkg in ./artifacts/*.nupkg; do
-                      dotnet nuget push "$nupkg" --api-key ${{ secrets.NUGET_KEY }} --source "https://api.nuget.org/v3/index.json" --skip-duplicate
+                      dotnet nuget push "$nupkg" --api-key "${{ secrets.NUGET_KEY }}" --source "https://api.nuget.org/v3/index.json" --skip-duplicate
                     done
                     
             - name: Notify Discord
