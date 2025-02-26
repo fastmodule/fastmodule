@@ -13,9 +13,6 @@ jobs:
               uses: actions/setup-dotnet@v4
               with:
                 dotnet-version: '9.0.x'
-                source-url: "https://api.nuget.org/v3/index.json"
-              env:
-                  NUGET_AUTH_TOKEN: ${{ secrets.NUGET_KEY }}
                 
             -   name: Restore dependencies
                 run: dotnet restore
@@ -37,8 +34,10 @@ jobs:
             -   name: Push all packages to NuGet/FastModule Organization
                 run: |
                     for nupkg in ./artifacts/*.nupkg; do
-                      dotnet nuget push "$nupkg"
+                      dotnet nuget push "$nupkg" -k $NUGET_AUTH_TOKEN -s https://api.nuget.org/v3/index.json
                     done
+                env:
+                    NUGET_AUTH_TOKEN: ${{ secrets.NUGET_KEY }}
                     
             - name: Notify Discord
               uses: Ilshidur/action-discord@master
