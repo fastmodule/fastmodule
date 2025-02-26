@@ -17,6 +17,11 @@
         <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
     <ItemGroup>
+      <PackageReference Include="Duende.AccessTokenManagement" Version="3.2.0" />
+      <PackageReference Include="Keycloak.AuthServices.Authentication" Version="2.6.0" />
+      <PackageReference Include="Keycloak.AuthServices.Authorization" Version="2.6.0" />
+      <PackageReference Include="Keycloak.AuthServices.Sdk" Version="2.6.0" />
+      <PackageReference Include="Keycloak.AuthServices.Sdk.Kiota" Version="26.0.5" />
       <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.2" />
       <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.2" />
       <PackageReference Include="Microsoft.OpenApi" Version="1.6.23" />
