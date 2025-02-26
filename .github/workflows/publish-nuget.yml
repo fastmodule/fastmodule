@@ -15,10 +15,16 @@ jobs:
                 uses: actions/setup-dotnet@v3
                 with:
                     dotnet-version: '9.0.2'
-                    source-url: https://nuget.pkg.github.com/fastmodule/index.json
+                    source-url: https://api.nuget.org/v3/index.json
                 env:
                     NUGET_AUTH_TOKEN: ${{ secrets.NUGET_KEY }}
             
+            -   name: Install .NET SDK manually (if setup fails)
+                run: |
+                        curl -sSL https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --version 9.0.2
+                        echo "##[add-path]$HOME/.dotnet"
+                continue-on-error: true
+                    
             -   name: Restore dependencies
                 run: dotnet restore
             
