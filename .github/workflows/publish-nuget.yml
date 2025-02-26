@@ -42,9 +42,8 @@ jobs:
                     done
                     
             - name: Notify Discord
-              uses: Ilshidur/action-discord@v1
+              uses: Ilshidur/action-discord@master
+              env:
+                  DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
               with:
-                  webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
-                  content: "🎉 New release published! 🚀\n\n**Packages:**\n- FastModule.Core\n- FastModule.Domain\n- FastModule.EntityFrameworkCore\n- FastModule.Keycloak\n- FastModule.User\n- FastModule.Shared\n\n**Version:** ${{ github.ref_name }}\n\n**Repository:** ${{ github.repository }}"
-                  avatar: "https://github.com/actions.png"
-                  username: "GitHub Actions"
+                  args: "🎉 New release published! 🚀\n\n**Packages:**\n- FastModule.Core\n- FastModule.Domain\n- FastModule.EntityFrameworkCore\n- FastModule.Keycloak\n- FastModule.User\n- FastModule.Shared\n\n**Version:** ${{ github.ref_name }}\n\n**Repository:** ${{ github.repository }}"
