@@ -32,9 +32,11 @@ jobs:
                 working-directory: ${{ github.workspace }}
                                    
             -   name: Push all packages to NuGet/FastModule Organization
+                env:
+                    NUGET_API_KEY: ${{ secrets.NUGET_KEY }}
                 run: |
                     for nupkg in ./artifacts/*.nupkg; do
-                      dotnet nuget push "$nupkg" --api-key "${{ secrets.NUGET_KEY }}" --source "https://api.nuget.org/v3/index.json" --skip-duplicate
+                      dotnet nuget push "$nupkg" --api-key "$NUGET_API_KEY" --source "https://api.nuget.org/v3/index.json" --skip-duplicate
                     done
                     
             - name: Notify Discord
