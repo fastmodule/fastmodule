@@ -16,7 +16,8 @@ public static class EndpointExtensions
     public static IEndpointRouteBuilder MapFastModules(this IEndpointRouteBuilder endpoints)
     {
         // Get all registered modules that implement IFastModule
-        var onlyFastModules = ModuleRegistrationExtensions.GetRegisteredModules()
+        var onlyFastModules = ModuleRegistrationExtensions
+            .GetRegisteredModules()
             .Where(t => typeof(IFastModule).IsAssignableFrom(t));
 
         // Iterate over each registered module and map its routes
@@ -43,8 +44,11 @@ public static class EndpointExtensions
         }
 
         // Create an instance of the module
-        var moduleInstance = Activator.CreateInstance(moduleType) as IFastModule
-            ?? throw new InvalidOperationException($"Failed to create instance of {moduleType.Name}");
+        var moduleInstance =
+            Activator.CreateInstance(moduleType) as IFastModule
+            ?? throw new InvalidOperationException(
+                $"Failed to create instance of {moduleType.Name}"
+            );
 
         // Log the mapping process
         Console.WriteLine($"🚀 Mapping {moduleType.Assembly.FullName} endpoints...");

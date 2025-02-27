@@ -20,15 +20,13 @@ public class Webhook(IMediator mediator) : IEndpointDefinition
 
     private async Task<IResult> ProcessWebhook(HttpContext ctx, object payload)
     {
-
-        // Todo: Implement validation of the payload based of the event that is triggered from Keycloak. 
-        string jsonPayload = payload.ToString();  
+        // Todo: Implement validation of the payload based of the event that is triggered from Keycloak.
+        string jsonPayload = payload.ToString();
 
         // Parse the JSON string to a JsonDocument
         var doc = JsonDocument.Parse(jsonPayload);
         var root = doc.RootElement;
-        
-        
+
         /**
          * dummy payload to test the webhook
          * {
@@ -38,13 +36,13 @@ public class Webhook(IMediator mediator) : IEndpointDefinition
                 "userName": "something"
             }
          */
-        
+
         var newUserCreatedEvent = new NewUserCreatedEvent
         {
             FullName = root.GetProperty("fullName").ToString(),
             Email = root.GetProperty("email").ToString(),
             Username = root.GetProperty("userName").ToString(),
-            SubjectId = root.GetProperty("sub").ToString()
+            SubjectId = root.GetProperty("sub").ToString(),
         };
         await mediator.Publish(newUserCreatedEvent);
         return Results.Ok(HttpStatusCode.Accepted);

@@ -22,7 +22,7 @@ internal class FastModuleDiscovery(ILogger logger)
         "Npgsql",
         "Mono",
         "Humanizer",
-        "MediatR"
+        "MediatR",
     ];
 
     public IEnumerable<Type> DiscoverModules()
@@ -205,7 +205,11 @@ internal class FastModuleDiscovery(ILogger logger)
                     // Only look at public types that could implement IFastModule
                     var types = a.GetExportedTypes()
                         .Where(t =>
-                            t is { IsAbstract: false, IsInterface: false } && (typeof(IFastModule).IsAssignableFrom(t) || typeof(IFastModuleEvent).IsAssignableFrom(t))
+                            t is { IsAbstract: false, IsInterface: false }
+                            && (
+                                typeof(IFastModule).IsAssignableFrom(t)
+                                || typeof(IFastModuleEvent).IsAssignableFrom(t)
+                            )
                         )
                         .ToList();
 

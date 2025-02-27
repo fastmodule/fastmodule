@@ -1,10 +1,10 @@
 using FastModule.Keycloak.Configurations;
+using Keycloak.AuthServices.Authentication;
+using Keycloak.AuthServices.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FastModule.Keycloak.Extensions;
 
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 public static class OAuthExtensions
@@ -60,24 +60,31 @@ public static class OAuthExtensions
             },
         };
 
+        services.AddKeycloakWebApiAuthentication(config =>
+        {
+            config.Audience = keycloakSetting.Audience;
+            config.AuthServerUrl = keycloakSetting.BaseUrl;
+            config.Realm = keycloakSetting.Realm;
+            config.DisableRolesAccessTokenMapping = false;
+            config.VerifyTokenAudience = true;
+        });
+
+        services.AddKeycloakAuthorization(option =>
+        {
+            option.AuthServerUrl = keycloakSetting.BaseUrl;
+            option.Realm = keycloakSetting.Realm;
+            option.Resource = keycloakSetting.ClientId;
+        });
+
         services
-            .AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(options =>
-            {
-                options.Authority = keycloakSetting.Authority;
-                options.Audience = keycloakSetting.Audience;
-                options.TokenValidationParameters = new TokenValidationParameters
+            .AddAuthorizationBuilder()
+            .AddPolicy(
+                "admin",
+                builder =>
                 {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                };
-            });
+                    builder.RequireResourceRoles(["admin-client-role", "manage-users"]);
+                }
+            );
 
         services.AddOpenApi(options =>
         {
@@ -101,8 +108,6 @@ public static class OAuthExtensions
                 }
             );
         });
-        services.AddHttpContextAccessor();
-        services.AddAuthorization();
         return services;
     }
 }

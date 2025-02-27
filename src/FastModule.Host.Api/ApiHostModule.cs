@@ -8,7 +8,10 @@ namespace FastModule.Host.Api;
 [DependsOn(typeof(User.Module))]
 public sealed class ApiHostModule : Core.FastModule
 {
-    public override void Register(IServiceCollection services, Action<DbContextOptionsBuilder>? options = null)
+    public override void Register(
+        IServiceCollection services,
+        Action<DbContextOptionsBuilder>? options = null
+    )
     {
         Console.WriteLine("✅ Bootstrap ApiHostModule Registered in DI.");
     }

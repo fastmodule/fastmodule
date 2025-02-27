@@ -1,5 +1,3 @@
 ﻿namespace FastModule.Domain;
 
-public class Module : Core.FastModule
-{
-}
+public class Module : Core.FastModule { }

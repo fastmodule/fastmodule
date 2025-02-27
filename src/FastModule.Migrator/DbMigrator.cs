@@ -6,7 +6,8 @@ using Microsoft.Extensions.Logging;
 
 namespace FastModule.Migrator;
 
-public class DbMigrator(IServiceProvider serviceProvider, ILogger<DbMigrator> logger) : IHostedService
+public class DbMigrator(IServiceProvider serviceProvider, ILogger<DbMigrator> logger)
+    : IHostedService
 {
     public async Task StartAsync(CancellationToken cancellationToken)
     {

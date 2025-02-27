@@ -10,4 +10,3 @@ public sealed class UserEntity : TimeStampEntity
     public string SubjectId { get; set; } = string.Empty;
     public string Username { get; set; } = string.Empty;
 }
-
