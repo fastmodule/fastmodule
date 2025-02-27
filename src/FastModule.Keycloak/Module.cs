@@ -3,6 +3,7 @@ using FastModule.Keycloak.Endpoints;
 using FastModule.Keycloak.Extensions;
 using Keycloak.AuthServices.Authorization;
 using Keycloak.AuthServices.Sdk;
+using Keycloak.AuthServices.Sdk.Admin;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -31,15 +32,23 @@ public sealed class Module : Core.FastModule
             .AddKeycloakAuthentication(keycloakSetting)
             .AddKeycloakAdminApi(keycloakSetting)
             .AddHttpContextAccessor();
+        
+        services.AddTransient(o => new KeycloakAdmin(
+            o.GetRequiredService<IHttpContextAccessor>(), keycloakSetting));
+        services.AddTransient<Webhook>();
     }
 
     public override IEndpointRouteBuilder AddRoutes(IEndpointRouteBuilder app)
     {
-        var keycloak = app.MapGroup("/keycloak").WithTags("keycloak");
-        var mediatR = app.ServiceProvider.GetRequiredService<IMediator>();
-        var httpContextAccessor = app.ServiceProvider.GetRequiredService<IHttpContextAccessor>();
-        new Webhook(mediatR).MapEndpoint(keycloak);
-        new KeycloakAdmin(httpContextAccessor).MapEndpoint(keycloak);
+        var keycloak = app.MapGroup("/keycloak/admin").WithTags("keycloak");
+        var isAdminEndpointEnabled = app.ServiceProvider.GetService<IKeycloakClient>() != null;
+        var webhook = app.ServiceProvider.GetRequiredService<Webhook>();
+        webhook.MapEndpoint(keycloak);
+        
+        if (!isAdminEndpointEnabled) return keycloak;
+        
+        var keycloakAdmin = app.ServiceProvider.GetRequiredService<KeycloakAdmin>();
+        keycloakAdmin.MapEndpoint(keycloak);
         return keycloak;
     }
 }
