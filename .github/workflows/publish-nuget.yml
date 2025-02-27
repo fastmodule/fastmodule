@@ -23,46 +23,12 @@ jobs:
             -   name: Pack all projects
                 run: |
                     mkdir -p ./artifacts
-                    # Function to get the current version of a project
-                    get_version() {
-                        local csproj_file=$1
-                        grep -oP '<Version>\K[^<]+' "$csproj_file"
-                    }
-    
-                    # Function to check if the version has changed
-                    version_has_changed() {
-                        local csproj_file=$1
-                        local nupkg_file=$2
-                        local current_version=$(get_version "$csproj_file")
-                        
-                        if [ -f "$nupkg_file" ]; then
-                            local packed_version=$(unzip -p "$nupkg_file" '*.nuspec' | grep -oP '<version>\K[^<]+')
-                            if [ "$current_version" == "$packed_version" ]; then
-                                return 1 # Version has not changed
-                            fi
-                        fi
-                        return 0 # Version has changed or nupkg does not exist
-                    }
-    
-                    # Pack each project if the version has changed
-                    for project in src/FastModule.Core/FastModule.Core.csproj \
-                                    src/FastModule.Domain/FastModule.Domain.csproj \
-                                    src/FastModule.EntityFrameworkCore/FastModule.EntityFrameworkCore.csproj \
-                                    src/FastModule.Keycloak/FastModule.Keycloak.csproj \
-                                    src/FastModule.User/FastModule.User.csproj \
-                                    src/FastModule.Shared/FastModule.Shared.csproj; do
-                        project_name=$(basename "$project" .csproj)
-                        current_version=$(get_version "$project")
-                        nupkg_file="./artifacts/$project_name.$current_version.nupkg"
-                        
-                    
-                        if version_has_changed "$project" "$nupkg_file"; then
-                            echo "Version has changed for $project. Packing..."
-                            dotnet pack "$project" --configuration Release --no-build --output ./artifacts
-                        else
-                            echo "Version has not changed for $project. Skipping pack."
-                        fi
-                    done
+                    dotnet pack src/FastModule.Core/FastModule.Core.csproj --configuration Release --no-build --output ./artifacts
+                    dotnet pack src/FastModule.Domain/FastModule.Domain.csproj --configuration Release --no-build --output ./artifacts
+                    dotnet pack src/FastModule.EntityFrameworkCore/FastModule.EntityFrameworkCore.csproj --configuration Release --no-build --output ./artifacts
+                    dotnet pack src/FastModule.Keycloak/FastModule.Keycloak.csproj --configuration Release --no-build --output ./artifacts
+                    dotnet pack src/FastModule.User/FastModule.User.csproj --configuration Release --no-build --output ./artifacts
+                    dotnet pack src/FastModule.Shared/FastModule.Shared.csproj --configuration Release --no-build --output ./artifacts
                 working-directory: ${{ github.workspace }}
                                    
             -   name: Push all packages to NuGet/FastModule Organization
