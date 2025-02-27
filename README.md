@@ -19,6 +19,7 @@ Install FastModule via NuGet:
 - **Minimal API Support:** Uses `IEndpointRouteBuilder` for defining routes.
 - **Automatic Module Discovery:** FastModule scans and registers implementations automatically.
 - **Dependency Injection:** Built-in support for DI.
+- **Keycloak Integration:** Easily integrate Keycloak for authentication.
 - **Database Configuration:** Easily configure database connections.
 
 ### Routing
@@ -77,6 +78,37 @@ builder.Services.AddFastModule(options =>
                       x => x.MigrationsHistoryTable("ef_migrations"));
 });
 ```
+
+### Keycloak Integration
+```bash
+dotnet add package FastModule.Keycloak
+```
+
+```csharp
+// UserModule.cs
+[DependsOn(typeof(Keycloak.Module))]
+public class UserModule : FastModule
+{
+    public override IEndpointRouteBuilder AddRoutes(IEndpointRouteBuilder app)
+    {
+        var users = app.MapGroup("/api").WithTags("users");
+        users.MapGet("/users", async (UserDbContext dbContext) =>
+        {
+            return await dbContext.Users.ToListAsync();
+        });
+        return app;
+    }
+}
+
+
+
+```sh
+dotnet run
+```
+```curl
+curl https://localhost:7167/keycloak/admin/realm/users?page=1&pageSize=10 -H "Authorization Bearer <access_token>"
+```    
+
 
 ## Join the Community
 

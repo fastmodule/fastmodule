@@ -14,7 +14,6 @@
         <PackageProjectUrl>https://github.com/fastmodule/fastmodule</PackageProjectUrl>
         <RepositoryUrl>https://github.com/fastmodule/fastmodule.git</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
     <ItemGroup>
       <ProjectReference Include="..\FastModule.Domain\FastModule.Domain.csproj" />
