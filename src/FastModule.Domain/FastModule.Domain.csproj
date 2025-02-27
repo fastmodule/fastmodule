@@ -7,14 +7,13 @@
     </PropertyGroup>
     <PropertyGroup>
         <PackageId>FastModule.Domain</PackageId>
-        <Version>1.0.0</Version>
+        <Version>1.0.1</Version>
         <Authors>@fastModule</Authors>
         <Company>FastModule</Company>
         <Description>Defines the core domain layer, including common entities, value objects, and domain services.</Description>
         <PackageProjectUrl>https://github.com/fastmodule/fastmodule</PackageProjectUrl>
         <RepositoryUrl>https://github.com/fastmodule/fastmodule.git</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
     <ItemGroup>
       <ProjectReference Include="..\FastModule.Core\FastModule.Core.csproj" />
