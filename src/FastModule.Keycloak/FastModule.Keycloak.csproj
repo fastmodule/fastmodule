@@ -7,14 +7,18 @@
     </PropertyGroup>
     <PropertyGroup>
         <PackageId>FastModule.Keycloak</PackageId>
-        <Version>1.0.1</Version>
+        <Version>1.0.2</Version>
         <Authors>@fastModule</Authors>
         <Company>FastModule</Company>
         <Description>Adds Keycloak integration for authentication and authorization, enabling seamless OIDC, OAuth2, and JWT-based security within FastModule-based applications.</Description>
         <PackageProjectUrl>https://github.com/fastmodule/fastmodule</PackageProjectUrl>
         <RepositoryUrl>https://github.com/fastmodule/fastmodule.git</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
+    <ItemGroup>
+        <None Include="..\..\README.md" Pack="true" PackagePath="\"/>
+    </ItemGroup>
     <ItemGroup>
       <PackageReference Include="Duende.AccessTokenManagement" Version="3.2.0" />
       <PackageReference Include="Keycloak.AuthServices.Authentication" Version="2.6.0" />

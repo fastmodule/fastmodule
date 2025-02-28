@@ -4,8 +4,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FastModule.Host.Api;
 
+
 [DependsOn(typeof(Keycloak.Module))]
-[DependsOn(typeof(User.Module))]
 public sealed class ApiHostModule : Core.FastModule
 {
     public override void Register(

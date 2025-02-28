@@ -23,6 +23,8 @@ internal class FastModuleDiscovery(ILogger logger)
         "Mono",
         "Humanizer",
         "MediatR",
+        "Duende",
+        "Keycloak"
     ];
 
     public IEnumerable<Type> DiscoverModules()
