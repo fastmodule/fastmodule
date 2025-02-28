@@ -22,6 +22,7 @@ public sealed class Module : Core.FastModule
     )
     {
         Console.WriteLine("✅ KeycloakModule Registered in DI.");
+        
         using var serviceProvider = services.BuildServiceProvider();
         var configuration = serviceProvider.GetRequiredService<IConfiguration>();
 
@@ -50,5 +51,11 @@ public sealed class Module : Core.FastModule
         var keycloakAdmin = app.ServiceProvider.GetRequiredService<KeycloakAdmin>();
         keycloakAdmin.MapEndpoint(keycloak);
         return keycloak;
+    }
+    
+    public override void RegisterEvents(IServiceCollection services)
+    {
+        Console.WriteLine("✅ KeycloakModule Events Registered in DI.");
+        services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<Module>());
     }
 }

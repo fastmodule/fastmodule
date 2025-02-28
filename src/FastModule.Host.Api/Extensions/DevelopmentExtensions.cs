@@ -1,3 +1,5 @@
+// using FastModule.Keycloak.Configurations;
+
 using FastModule.Keycloak.Configurations;
 using Scalar.AspNetCore;
 
@@ -10,11 +12,11 @@ public static class DevelopmentExtensions
         // Development-specific configuration
         if (app.Environment.IsProduction())
             return app;
-
+    
         var keycloakSetting =
             app.Configuration.GetSection("KeycloakSetting").Get<KeycloakSetting>()
             ?? throw new InvalidOperationException("KeycloakSetting is not configured");
-
+    
         app.MapScalarApiReference(config =>
         {
             config
